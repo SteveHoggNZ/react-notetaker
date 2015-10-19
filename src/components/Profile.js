@@ -16,13 +16,16 @@ class Profile extends React.Component {
     }
 
     init() {
-        helpers.getGithubInfo(this.getParams().username)
+        helpers.getGithubInfo(this.router.getCurrentParams().username)
             .then(function (dataObj) {
                 this.setState({
                     bio: dataObj.bio,
                     repos: dataObj.repos
                 });
             }.bind(this));
+    }
+    componentWillMount() {
+        this.router = this.context.router;
     }
     componentDidMount() {
         //this.ref = new Firebase('https://stevetestreact.firebaseio.com/');
@@ -36,7 +39,7 @@ class Profile extends React.Component {
     handleAddNote(newNote) {
     }
     render() {
-        var username = this.getParams().username;
+        var username = this.router.getCurrentParams().username;
 
         return (
             <div className="row">
@@ -56,5 +59,9 @@ class Profile extends React.Component {
         )
     }
 }
+
+Profile.contextTypes = {
+  router: React.PropTypes.func.isRequired
+};
 
 export default Profile;
