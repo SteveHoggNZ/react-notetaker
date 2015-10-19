@@ -5,25 +5,35 @@ var ReactFireMixin = require('reactfire');
 var Repos = require('./Github/Repos');
 var UserProfile = require('./Github/UserProfile');
 var Notes = require('./Notes/Notes');
+var helpers = require('./utils/helpers');
 
 var Profile = React.createClass({
     mixins: [Router.State, ReactFireMixin],
     getInitialState: function () {
         return {
-            notes: ['note1', 'note2'],
-            bio: {name: 'Tyler'},
-            repos: [1,2,3]
+            notes: [],
+            bio: {},
+            repos: []
         }
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.ref = new Firebase('https://stevetestreact.firebaseio.com/');
         var childRef = this.ref.child(this.getParams().username);
         this.bindAsArray(childRef, 'notes');
+
+        helpers.getGithubInfo(this.getParams().username)
+            .then(function (dataObj) {
+                debugger;
+                this.setState({
+                    bio: dataObj.bio,
+                    repos: dataObj.repos
+                });
+            }.bind(this));
     },
-    componentWillUnmount: function() {
+    componentWillUnmount: function () {
         this.unbind('notes');
     },
-    handleAddNote: function(newNote) {
+    handleAddNote: function (newNote) {
         this.ref.child(this.getParams().username).set(this.state.notes.concat([newNote]));
     },
     render: function () {
@@ -32,10 +42,10 @@ var Profile = React.createClass({
         return (
             <div className="row">
                 <div className="col-md-4">
-                    <UserProfile username={username} bio={this.state.bio} />
+                    <UserProfile username={username} bio={this.state.bio}/>
                 </div>
                 <div className="col-md-4">
-                    <Repos username={username} repos={this.state.repos} />
+                    <Repos username={username} repos={this.state.repos}/>
                 </div>
                 <div className="col-md-4">
                     <Notes
