@@ -4,6 +4,6 @@ import routes from './config/routes';
 
 import Main from './components/Main';
 
-Router.run(routes, (Root) => {
-    React.render(<Root />, document.getElementById('root'));
+Router.run(routes, (Root, state) => {
+    React.render(<Root {...state} />, document.getElementById('root'));
 });
