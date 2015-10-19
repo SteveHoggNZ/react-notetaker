@@ -9,15 +9,15 @@ function getUserInfo(username) {
 }
 
 var helpers = {
-    getGithubInfo: function (username) {
-        return axios.all([getRepos(username), getUserInfo(username)])
-            .then(function (arr) {
-                return {
-                    repos: arr[0].data,
-                    bio: arr[1].data
-                }
-            });
-    }
+  getGithubInfo: function(username) {
+      return axios.all([getRepos(username), getUserInfo(username)])
+        .then(function(arr){
+              return {
+                  repos: arr[0].data,
+                  bio: arr[1].data
+              }
+          });
+  }
 };
 
 export default helpers;

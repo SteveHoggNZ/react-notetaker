@@ -16,22 +16,29 @@ var Profile = React.createClass({
             repos: []
         }
     },
-    componentDidMount: function () {
-        this.ref = new Firebase('https://stevetestreact.firebaseio.com/');
+    init: function () {
         var childRef = this.ref.child(this.getParams().username);
         this.bindAsArray(childRef, 'notes');
 
         helpers.getGithubInfo(this.getParams().username)
             .then(function (dataObj) {
-                debugger;
                 this.setState({
                     bio: dataObj.bio,
                     repos: dataObj.repos
                 });
             }.bind(this));
     },
+    componentDidMount: function () {
+        this.ref = new Firebase('https://stevetestreact.firebaseio.com/');
+        this.init();
+    },
     componentWillUnmount: function () {
         this.unbind('notes');
+    },
+    componentWillReceiveProps: function () {
+        // Remove old Firebase binding
+        this.unbind('notes');
+        this.init();
     },
     handleAddNote: function (newNote) {
         this.ref.child(this.getParams().username).set(this.state.notes.concat([newNote]));
